@@ -1,0 +1,9 @@
+<body>
+  <div *ngIf="!playerFound">
+    <input [(ngModel)]="player.name">
+    <button (click)="playerFound = true">Submit Name!</button>
+  </div>
+  <div *ngIf="playerFound">
+    <p> User: {{ player.name }}  Amount: {{ player.amount }}</p>
+  </div>
+</body>

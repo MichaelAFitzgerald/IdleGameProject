@@ -1,0 +1,13 @@
+<body>
+  <div *ngFor="let object of objectArray">
+    <p>{{ object.name }} Ranks: {{ object.ranks }}</p>
+    <p *ngIf="object.purchased">Current output: {{ object.currentProd }}</p>
+    <button *ngIf="object.purchased" (click)="addRank(object)">
+      Buy 1 Rank for {{ object.currentCost }}
+    </button>
+    <button *ngIf="object.purchased" (click)="addOutput(object.currentProd)">Generate output!</button>
+    <button *ngIf="!object.purchased" (click)="unlock(object)">
+      Unlock {{ object.name }} for {{ object.initialCost }}
+    </button>
+  </div>
+</body>
