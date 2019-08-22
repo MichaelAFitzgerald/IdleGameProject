@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ObjectType } from '../Interfaces/objectInterface';
 import { DataStationService } from '../Services/data-station.service';
+import { TimerService } from '../Services/timer.service';
 
 @Component({
   selector: 'app-objects',
@@ -16,7 +17,10 @@ export class ObjectsComponent implements OnInit {
   students: ObjectType;
   teachers: ObjectType;
 
-  constructor(private dataStation: DataStationService) {}
+  constructor(
+    private dataStation: DataStationService,
+    private timerService: TimerService
+  ) {}
 
   ngOnInit() {
     this.pencils = {
@@ -28,7 +32,9 @@ export class ObjectsComponent implements OnInit {
       currentCost: 0,
       initialProd: 10,
       prodMultiplier: 2,
-      currentProd: 0
+      currentProd: 0,
+      currentTime: 0,
+      maxTime: 1
     };
     this.erasers = {
       name: 'Erasers',
@@ -39,7 +45,9 @@ export class ObjectsComponent implements OnInit {
       currentCost: 0,
       initialProd: 100,
       prodMultiplier: 3,
-      currentProd: 0
+      currentProd: 0,
+      currentTime: 0,
+      maxTime: 2
     };
     this.desks = {
       name: 'Desks',
@@ -50,7 +58,9 @@ export class ObjectsComponent implements OnInit {
       currentCost: 0,
       initialProd: 1000,
       prodMultiplier: 4,
-      currentProd: 0
+      currentProd: 0,
+      currentTime: 0,
+      maxTime: 3
     };
     this.books = {
       name: 'Books',
@@ -61,7 +71,9 @@ export class ObjectsComponent implements OnInit {
       currentCost: 0,
       initialProd: 10000,
       prodMultiplier: 5,
-      currentProd: 0
+      currentProd: 0,
+      currentTime: 0,
+      maxTime: 4
     };
     this.students = {
       name: 'Students',
@@ -72,7 +84,9 @@ export class ObjectsComponent implements OnInit {
       currentCost: 0,
       initialProd: 100000,
       prodMultiplier: 6,
-      currentProd: 0
+      currentProd: 0,
+      currentTime: 0,
+      maxTime: 5
     };
     this.teachers = {
       name: 'Teachers',
@@ -83,7 +97,9 @@ export class ObjectsComponent implements OnInit {
       currentCost: 0,
       initialProd: 10000000,
       prodMultiplier: 7,
-      currentProd: 0
+      currentProd: 0,
+      currentTime: 0,
+      maxTime: 6
     };
 
     this.objectArray = [
@@ -96,12 +112,17 @@ export class ObjectsComponent implements OnInit {
     ];
 
     this.calculateAllCostsAndProd(this.objectArray);
+
+    this.timerService.events.subscribe(x => {
+      this.automatedOutput();
+      this.calculateIncome();
+    });
   }
 
   // Method to calculate the cost of the next rank of an object
   calculateCost(object: ObjectType) {
     let cost =
-      object.initialCost +
+      object.currentCost +
       object.ranks * object.costMultiplier * object.initialCost;
     cost = Math.ceil(cost);
     object.currentCost = cost + object.ranks;
@@ -109,7 +130,9 @@ export class ObjectsComponent implements OnInit {
 
   // Method to calculate the output of the object per event
   calculateProd(object: ObjectType) {
-    const prod = object.initialProd + object.ranks * object.prodMultiplier;
+    const prod =
+      object.currentProd +
+      object.ranks * object.prodMultiplier * object.initialProd;
     object.currentProd = prod;
   }
 
@@ -150,5 +173,26 @@ export class ObjectsComponent implements OnInit {
   // Sends the cost of the player purchase to the Player Component
   subtractCost(data: number) {
     this.dataStation.addOutput(data * -1);
+  }
+
+  // If the object is purchased by the player, this will send their
+  automatedOutput() {
+    this.objectArray.forEach(object => {
+      if (object.purchased) {
+        object.currentTime += 0.1;
+        if (object.currentTime >= object.maxTime) {
+          object.currentTime -= object.maxTime;
+          this.addOutput(object.currentProd);
+        }
+      }
+    });
+  }
+
+  calculateIncome() {
+    let value = 0;
+    this.objectArray.forEach((object: ObjectType) => {
+      value += object.currentProd / object.maxTime;
+    });
+    this.dataStation.addIncome(value);
   }
 }

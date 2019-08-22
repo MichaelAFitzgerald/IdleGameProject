@@ -17,10 +17,14 @@ export class PlayerComponent implements OnInit {
     this.playerFound = false;
     this.player = {
       name: '',
-      amount: 0
+      amount: 0,
+      incomePerEvent: 0
     };
     this.dataStation.grabOutput.subscribe((data: number) => {
       this.changeAmount(data);
+    });
+    this.dataStation.grabIncome.subscribe((data: number) => {
+      this.player.incomePerEvent = data;
     });
   }
 

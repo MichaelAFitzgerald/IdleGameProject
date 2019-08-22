@@ -7,6 +7,8 @@ import { Subject } from 'rxjs';
 export class DataStationService {
   private output = new Subject();
   private output$ = this.output.asObservable();
+  private income = new Subject();
+  private income$ = this.income.asObservable();
 
   private playerAmount: number;
 
@@ -18,9 +20,17 @@ export class DataStationService {
     return this.output$;
   }
 
+  public get grabIncome() {
+    return this.income$;
+  }
+
   // Adds revenue to the Player Component
   public addOutput(data: number) {
     this.output.next(data);
+  }
+
+  public addIncome(value: number) {
+    this.income.next(value);
   }
 
   // Takes in data from the Player Component so it can be used to check the costs from Object Componenet

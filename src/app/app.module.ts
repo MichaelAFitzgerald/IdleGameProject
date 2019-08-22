@@ -7,12 +7,18 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ObjectsComponent } from './objects/objects.component';
 import { PlayerComponent } from './player/player.component';
+import { PageSwapComponent } from './page-swap/page-swap.component';
+import { PerksComponent } from './perks/perks.component';
+import { SettingsComponent } from './settings/settings.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     ObjectsComponent,
-    PlayerComponent
+    PlayerComponent,
+    PageSwapComponent,
+    PerksComponent,
+    SettingsComponent
   ],
   imports: [
     BrowserModule,
